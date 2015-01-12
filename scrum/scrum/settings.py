@@ -58,6 +58,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'scrum',
+        'USER': 'postgres',
+        'PASSWORD': '!QAZ2wsx#EDC',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
