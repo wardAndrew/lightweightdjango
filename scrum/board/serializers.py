@@ -16,7 +16,10 @@ User = get_user_model()
 
 class SprintSerializer(serializers.ModelSerializer):
     
+    '''
     links = serializers.SerializerMethodField('get_links')
+    '''
+    links = serializers.SerializerMethodField()
     
     class Meta:
         model = Sprint
@@ -50,10 +53,18 @@ class SprintSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     
     assigned = serializers.SlugRelatedField(
-        slug_field=User.USERNAME_FIELD, required=False)
-    status_display = serializers.SerializerMethodField('get_status_display')
-    links = serializers.SerializerMethodField('get_links')
+        slug_field=User.USERNAME_FIELD, required=False, queryset=User.objects.all())
     
+    '''
+    status_display = serializers.SerializerMethodField('get_status_display')
+    '''
+    status_display = serializers.SerializerMethodField()
+
+    '''
+    links = serializers.SerializerMethodField('get_links')
+    '''
+    links = serializers.SerializerMethodField()
+
     class Meta:
         model = Task
         fields = ('id', 'name', 'description', 'sprint', 'status', 
@@ -79,6 +90,10 @@ class TaskSerializer(serializers.ModelSerializer):
                 kwargs={User.USERNAME_FIELD: obj.assigned}, request=request)
         return links
     
+    '''
+    def validate_sprint(self, attrs, source):
+    '''
+
     def validate_sprint(self, attrs, source):
         sprint = attrs[source]
         if self.object and self.object.pk:
@@ -96,6 +111,10 @@ class TaskSerializer(serializers.ModelSerializer):
         return attrs
 
     def validate(self, attrs):
+
+        return attrs
+
+        '''
         sprint = attrs.get('sprint')
         status = int(attrs.get('status'))
         started = attrs.get('started')
@@ -109,7 +128,8 @@ class TaskSerializer(serializers.ModelSerializer):
         if completed and status != Task.STATUS_DONE:
             msg = _('Completed date cannot be set for uncompleted tasks.')
             raise serializers.ValidationError(msg)
-        return attrs    
+        return attrs
+        '''   
 
 class UserSerializer(serializers.ModelSerializer):
 	

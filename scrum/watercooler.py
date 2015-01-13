@@ -6,7 +6,7 @@ import signal
 import time
 import uuid
 
-from urllib.parse import urlparse
+from urlparse import urlparse
 
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.utils.crypto import constant_time_compare
@@ -46,14 +46,14 @@ class RedisSubscriber(BaseSubscriber):
                     except tornado.websocket.WebSocketClosedError:
                         # Remove dead peer
                         self.unsubscribe(msg.channel, subscriber)
-        super().on_message(msg)
+        super(RedisSubscriber, self).on_message(msg)
 
 
 class SprintHandler(WebSocketHandler):
     """Handles real-time updates to the board."""
 
     def check_origin(self, origin):
-        allowed = super().check_origin(origin)
+        allowed = super(SprintHandler, self).check_origin(origin)
         parsed = urlparse(origin.lower())
         matched = any(parsed.netloc == host for host in options.allowed_hosts)
         return options.debug or allowed or matched
@@ -134,7 +134,7 @@ class ScrumApplication(Application):
             (r'/socket', SprintHandler),
             (r'/(?P<model>task|sprint|user)/(?P<pk>[0-9]+)', UpdateHandler),
         ]
-        super().__init__(routes, **kwargs)
+        super(ScrumApplication, self).__init__(routes, **kwargs)
         self.subscriber = RedisSubscriber(Client())
         self.publisher = Redis()
         self._key = os.environ.get('WATERCOOLER_SECRET',
